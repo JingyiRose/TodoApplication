@@ -1,5 +1,6 @@
 package me.roseliu.todoapplication;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -23,6 +24,13 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<String> items;
     ArrayAdapter<String> itemsAdapter;
     ListView lvItems;
+
+    // a numeric code to identify the edit activity
+    public static final int EDIT_REQUEST_CODE = 20;
+    // keys used for passing data between activities
+    public static final String ITEM_TEXT = "itemText";
+    public static final String ITEM_POSITION = "itemPosition";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +87,18 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
+        lvItems.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                // first parameter is the context, second is the class of the activity to launch
+                Intent i = new Intent(MainActivity.this, EditItemActivity.class);
+                // put "extras" into the bundle for access in the edit activity
+                i.putExtra(ITEM_TEXT, items.get(position));
+                i.putExtra(ITEM_POSITION, position);
+                // brings up the edit activity with the expectation of a result
+                startActivityForResult(i, EDIT_REQUEST_CODE);
+            }
+        });
     }
 
     // returns the file in which the data is stored
@@ -110,4 +130,24 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        // EDIT_REQUEST_CODE defined with constants
+        if (resultCode == RESULT_OK && requestCode == EDIT_REQUEST_CODE) {
+            // extract updated item value from result extras
+            String updatedItem = data.getExtras().getString(ITEM_TEXT);
+            // get the position of the item which was edited
+            int position = data.getExtras().getInt(ITEM_POSITION, 0);
+            // update the model with the new item text at the edited position
+            items.set(position, updatedItem);
+            // notify the adapter the model changed
+            itemsAdapter.notifyDataSetChanged();
+            // Store the updated items back to disk
+            writeItems();
+            // notify the user the operation completed OK
+            Toast.makeText(this, "Item updated", Toast.LENGTH_SHORT).show();
+        }
+    }
 }
