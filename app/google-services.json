@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "266111750515",
+    "firebase_url": "https://todo-5808e.firebaseio.com",
+    "project_id": "todo-5808e",
+    "storage_bucket": "todo-5808e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:266111750515:android:f59ca09cbed257d8",
+        "android_client_info": {
+          "package_name": "me.roseliu.todoapplication"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "266111750515-7rl9ts2gbtfjuc8gkfv1bi54fto2afuc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDKGJQJV9zRenYqp9dHxSRp06plMKzu8Qk"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
