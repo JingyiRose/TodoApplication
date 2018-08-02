@@ -32,12 +32,20 @@
 
     <EditText
         android:id="@+id/etNewItem"
-        android:layout_width="295dp"
+        android:layout_width="184dp"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"
+        android:layout_toEndOf="@+id/btPush"
         android:ems="10"
         android:hint="Add a new item"
         android:inputType="textPersonName" />
+
+    <Button
+        android:id="@+id/btPush"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:text="Button" />
 
 </RelativeLayout>

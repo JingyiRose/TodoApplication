@@ -1,15 +1,22 @@
 package me.roseliu.todoapplication;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import com.parse.ParseCloud;
 
 import org.apache.commons.io.FileUtils;
 
@@ -17,6 +24,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -24,12 +32,23 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<String> items;
     ArrayAdapter<String> itemsAdapter;
     ListView lvItems;
+    Button btPush;
 
     // a numeric code to identify the edit activity
     public static final int EDIT_REQUEST_CODE = 20;
     // keys used for passing data between activities
     public static final String ITEM_TEXT = "itemText";
     public static final String ITEM_POSITION = "itemPosition";
+
+
+    private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Toast.makeText(getApplicationContext(), "onReceive invoked!", Toast.LENGTH_LONG).show();
+        }
+    };
+
 
 
     @Override
@@ -39,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
 
         // obtain a reference to the ListView created with the layout
         lvItems = (ListView) findViewById(R.id.lvItems);
+        btPush = (Button) findViewById(R.id.btPush);
         // initialize the items list
         readItems();
         // initialize the adapter using the items list
@@ -53,7 +73,31 @@ public class MainActivity extends AppCompatActivity {
         // setup the listener on creation
         setupListViewListener();
 
+        btPush.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                HashMap<String, String> payload = new HashMap<>();
+                payload.put("customData", "My message");
+                ParseCloud.callFunctionInBackground("pushChannelTest", payload);
+            }
+        });
+
     }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mBroadcastReceiver);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(mBroadcastReceiver, new IntentFilter(MyCustomReceiver.intentAction));
+    }
+
 
     public void onAddItem(View v) {
         // obtain a reference to the EditText created with the layout
